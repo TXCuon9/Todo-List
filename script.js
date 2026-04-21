@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderTask(task) {
         const li = document.createElement('li');
         li.setAttribute('task-id', task.id);
+        if (task.completed) {
+            li.classList.add('completed');
+        }
         li.innerHTML = `
         <span>${task.name}</span>
         <button>Delete</button>`;
@@ -40,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function completeTask(task, li) {
         li.addEventListener('click', (event) => {
             if (event.target.tagName === 'BUTTON') return;
-            if (task.completed) li.classList.add('completed');
             task.completed = !task.completed;
             li.classList.toggle('completed');
             saveTasks();
