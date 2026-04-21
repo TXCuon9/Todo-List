@@ -1,58 +1,62 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const todoInput = document.getElementById('todo-input');
-    const addTaskBtn = document.getElementById('add-task-btn')
-    const todoList = document.getElementById('todo-list');
 
-    // return localStorage or empty array
+    // get elements
+    const userInput = document.getElementById('todo-input');
+    const addTaskBtn = document.getElementById('add-task-btn');
+    const taskList = document.getElementById('todo-list');
+
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    tasks.forEach(task => renderTask(task));
 
-    tasks.forEach(task => renderTasks(task));
-
-    // Add new task
+    // process add btn
     addTaskBtn.addEventListener('click', () => {
-        const taskText = todoInput.value.trim();
-        if (taskText === "") return;
+        const inputValue = userInput.value.trim();
+        if (inputValue === "") return;
 
         const newTask = {
             id: Date.now(),
-            text: taskText,
+            name: inputValue,
             completed: false
         };
 
         tasks.push(newTask);
         saveTasks();
-        renderTasks(newTask);
-        todoInput.value = ""; // clear input
-        console.log(tasks);
+        userInput.value = "";
+        renderTask(newTask);
+        console.log(tasks)
     });
 
-    // Add new li and display them
-    function renderTasks(task) {
+    function renderTask(task) {
         const li = document.createElement('li');
-        li.setAttribute('data-id', task.id);
-        if (task.completed) li.classList.add('completed');
+        li.setAttribute('task-id', task.id);
         li.innerHTML = `
-        <span>${task.text}</span>
+        <span>${task.name}</span>
         <button>Delete</button>`;
-        li.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON') return;
+        taskList.appendChild(li);
+        completeTask(task, li);
+        delTask(task, li);
+    }
+
+    function completeTask(task, li) {
+        li.addEventListener('click', (event) => {
+            if (event.target.tagName === 'BUTTON') return;
+            if (task.completed) li.classList.add('completed');
             task.completed = !task.completed;
             li.classList.toggle('completed');
             saveTasks();
         });
+    }
 
-        li.querySelector('button').addEventListener('click', (e) => {
-            e.stopPropagation();
+    function delTask(task, li) {
+        li.querySelector('button').addEventListener('click', (event) => {
+            event.stopPropagation();
             tasks = tasks.filter(t => t.id !== task.id);
             li.remove();
             saveTasks();
         })
-        todoList.appendChild(li);
     }
 
-    // save task
-    const saveTasks = () => {
-        localStorage.setItem('tasks', JSON.stringify(tasks))
+    function saveTasks() {
+        localStorage.setItem('tasks', JSON.stringify(tasks));
     }
-
 })
