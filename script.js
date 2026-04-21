@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(tasks)
     });
 
+    // render task
     function renderTask(task) {
         const li = document.createElement('li');
         li.setAttribute('task-id', task.id);
@@ -40,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         delTask(task, li);
     }
 
+    // complete task
     function completeTask(task, li) {
         li.addEventListener('click', (event) => {
             if (event.target.tagName === 'BUTTON') return;
@@ -49,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // delete task
     function delTask(task, li) {
         li.querySelector('button').addEventListener('click', (event) => {
             event.stopPropagation();
@@ -58,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
 
+    // save task
     function saveTasks() {
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }
